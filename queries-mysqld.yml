@@ -1,0 +1,96 @@
+mysql_performance_schema_group_replication_group_member_stats:
+  query: "SELECT * FROM performance_schema.replication_group_member_stats"
+  metrics:
+    - CHANNEL_NAME:
+        usage: "LABEL"
+        description: "The name of the Group Replication channel."
+    - VIEW_ID:
+        usage: "LABEL"
+        description: "The current view identifier for this group."
+    - MEMBER_ID:
+        usage: "LABEL"
+        description: "The member server UUID. This has a different value for each member in the group. This also serves as a key because it is unique to each member."
+    - TRANSACTIONS_COMMITTED_ALL_MEMBERS:
+        usage: "LABEL"
+        description: "The transactions that have been successfully committed on all members of the replication group. This is updated at a fixed time interval."
+    - LAST_CONFLICT_FREE_TRANSACTION:
+        usage: "LABEL"
+        description: "The transaction identifier of the last conflict free transaction checked."
+    - COUNT_TRANSACTIONS_IN_QUEUE:
+        usage: "GAUGE"
+        description: "The number of transactions in the queue pending conflict detection checks. Once the transactions have been checked for conflicts, if they pass the check, they are queued to be applied as well."
+    - COUNT_TRANSACTIONS_CHECKED:
+        usage: "GAUGE"
+        description: "The number of transactions that have been checked for conflicts."
+    - COUNT_CONFLICTS_DETECTED:
+        usage: "COUNTER"
+        description: "The number of transactions that did not pass the conflict detection check."
+    - COUNT_TRANSACTIONS_ROWS_VALIDATING:
+        usage: "GAUGE"
+        description: "The current size of the conflict detection database (against which each transaction is certified)."
+mysql_performance_schema_group_replication_replication_connection_status:
+  query: "SELECT CHANNEL_NAME,group_name,source_uuid,service_state,received_transaction_set, case service_state when 'ON' then 0 else 1 end STATE FROM performance_schema.replication_connection_status"
+  metrics:
+    - CHANNEL_NAME:
+        usage: "LABEL"
+        description: "The name of the Group Replication channel."
+    - group_name:
+        usage: "LABEL"
+        description: "Shows the value of the name of the group. It is always a valid UUID."
+    - source_uuid:
+        usage: "LABEL"
+        description: "Shows the identifier for the group. It is similar to the group name and it is used as the UUID for all the transactions that are generated during group replication."
+    - service_state:
+        usage: "LABEL"
+        description: "Shows whether the member is a part of the group or not. The possible values of service state can be ON, OFF or CONNECTING"
+    - received_transaction_set:
+        usage: "LABEL"
+        description: "Transactions in this GTID set have been received by this member of the group."
+    - STATE:
+        usage: "GAUGE"
+        description: "State in an interger value"
+mysql_performance_schema_group_replication_replication_group_members:
+  query: "SELECT i.instance_name as INSTANCE_NAME, rgm.* ,IFNULL(rgm.MEMBER_STATE, 'OFFLINE') MEMBER_STATE_UPDATE,case rgm.MEMBER_STATE when 'ONLINE' then 0 else 1 end STATUS, case rgm.MEMBER_ROLE when 'PRIMARY' then 0 else 1 end ROLE FROM mysql_innodb_cluster_metadata.instances i LEFT JOIN performance_schema.replication_group_members rgm ON i.mysql_server_uuid = rgm.MEMBER_ID;"
+  metrics:
+    - INSTANCE_NAME:
+        usage: "LABEL"
+        description: "IP adress of the host"
+    - CHANNEL_NAME:
+        usage: "LABEL"
+        description: "The name of the Group Replication channel."
+    - MEMBER_ID:
+        usage: "LABEL"
+        description: "Shows the value of the name of the group. It is always a valid UUID."
+    - MEMBER_HOST:
+        usage: "LABEL"
+        description: "Hostname"
+    - MEMBER_PORT:
+        usage: "LABEL"
+        description: "Port"
+    - MEMBER_STATE:
+        usage: "LABEL"
+        description: "OFFLINE, ERROR, etc"
+    - MEMBER_ROLE:
+        usage: "LABEL"
+        description: "Primary or Secondary"
+    - MEMBER_VERSION:
+        usage: "LABEL"
+        description: "Version"
+    - MEMBER_STATE_UPDATE:
+        usage: "LABEL"
+        description: "OFFLINE, ERROR, etc UPDATED"
+    - STATUS:
+        usage: "GAUGE"
+        description: "Status in an interger value"
+    - ROLE:
+        usage: "GAUGE"
+        description: "Role in an interger value"
+mysql_performance_schema_group_replication_replication_router:
+  query: "select host_name as HOST_NAME , 0 as VALUE from mysql_innodb_cluster_metadata.hosts WHERE attributes LIKE '%mysql-router%';"
+  metrics:
+    - HOST_NAME:
+        usage: "LABEL"
+        description: "Name of the router"
+    - VALUE:
+        usage: "GAUGE"
+        description: "Fixed value"
