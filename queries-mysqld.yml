@@ -50,7 +50,7 @@ mysql_performance_schema_group_replication_replication_connection_status:
         usage: "GAUGE"
         description: "State in an interger value"
 mysql_performance_schema_group_replication_replication_group_members:
-  query: "SELECT i.instance_name as INSTANCE_NAME, rgm.* ,IFNULL(rgm.MEMBER_STATE, 'OFFLINE') MEMBER_STATE_UPDATE,case rgm.MEMBER_STATE when 'ONLINE' then 0 else 1 end STATUS, case rgm.MEMBER_ROLE when 'PRIMARY' then 0 else 1 end ROLE FROM mysql_innodb_cluster_metadata.instances i LEFT JOIN performance_schema.replication_group_members rgm ON i.mysql_server_uuid = rgm.MEMBER_ID WHERE @@hostname = (SELECT MEMBER_HOST FROM performance_schema.replication_group_members WHERE MEMBER_ROLE = 'PRIMARY');"
+  query: "SELECT i.instance_name as INSTANCE_NAME, rgm.* ,IFNULL(rgm.MEMBER_STATE, 'OFFLINE') MEMBER_STATE_UPDATE,case rgm.MEMBER_STATE when 'ONLINE' then 0 when 'RECOVERING' then 1 else 2 end STATUS, case rgm.MEMBER_ROLE when 'PRIMARY' then 0 else 1 end ROLE FROM mysql_innodb_cluster_metadata.instances i LEFT JOIN performance_schema.replication_group_members rgm ON i.mysql_server_uuid = rgm.MEMBER_ID WHERE @@hostname = (SELECT MEMBER_HOST FROM performance_schema.replication_group_members WHERE MEMBER_ROLE = 'PRIMARY');"
   metrics:
     - INSTANCE_NAME:
         usage: "LABEL"
