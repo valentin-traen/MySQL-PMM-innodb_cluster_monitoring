@@ -14,7 +14,6 @@ Custom dasboard for Innodb Cluster monitoring with PERCONA MONITORING AND MANAGE
 * Copy the yaml to /usr/local/percona/pmm-client/queries-mysqld.yml (default path)
 * Get the dashboard from https://grafana.com/dashboards/10006
 
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Built With
 
