@@ -1,4 +1,4 @@
-# Project Title
+# Innodb Cluster Monitoring
 
 Custom dasboard for Innodb Cluster monitoring with PERCONA MONITORING AND MANAGEMENT.
 
