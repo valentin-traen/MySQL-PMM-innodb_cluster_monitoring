@@ -6,7 +6,7 @@ Custom dasboard for Innodb Cluster monitoring with PERCONA MONITORING AND MANAGE
 
 ### Prerequisites
 
-* Your Innodb cluster must use hostname and no ip adress (cluster.addInstance("user@hostname:port"))
+* Your Innodb cluster must use hostnames and not ip adresses (cluster.addInstance("user@hostname:port"))
 * You need the wonderful plugin 'Status Dot' : https://grafana.com/plugins/btplc-status-dot-panel
 
 ### Installing
