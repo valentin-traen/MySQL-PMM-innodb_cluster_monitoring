@@ -50,7 +50,7 @@ mysql_performance_schema_group_replication_replication_connection_status:
         usage: "GAUGE"
         description: "State in an interger value"
 mysql_performance_schema_group_replication_replication_group_members:
-  query: "SELECT REGEXP_SUBSTR(i.instance_name, '.+?(?=:)'),c.cluster_name as CLUSTER_NAME,i.*, rgm.* ,IFNULL(rgm.MEMBER_STATE, 'OFFLINE') MEMBER_STATE_UPDATE,case rgm.MEMBER_STATE when 'ONLINE' then 0 when 'RECOVERING' then 1 else 2 end STATUS, case rgm.MEMBER_ROLE when 'PRIMARY' then 0 else 1 end ROLE FROM mysql_innodb_cluster_metadata.clusters c INNER JOIN mysql_innodb_cluster_metadata.instances i ON c.default_replicaset = i.replicaset_id LEFT JOIN performance_schema.replication_group_members rgm ON i.mysql_server_uuid = rgm.MEMBER_ID WHERE @@hostname = (SELECT MEMBER_HOST FROM performance_schema.replication_group_members WHERE MEMBER_ROLE = 'PRIMARY')"
+  query: "SELECT REGEXP_SUBSTR(i.instance_name, '.+?(?=:)'),c.cluster_name as CLUSTER_NAME,i.*, rgm.* ,IFNULL(rgm.MEMBER_STATE, 'OFFLINE') MEMBER_STATE_UPDATE,case rgm.MEMBER_STATE when 'ONLINE' then 0 when 'RECOVERING' then 1 else 2 end STATUS, case rgm.MEMBER_ROLE when 'PRIMARY' then 0 else 1 end ROLE FROM mysql_innodb_cluster_metadata.clusters c INNER JOIN mysql_innodb_cluster_metadata.instances i ON c.default_replicaset = i.replicaset_id LEFT JOIN performance_schema.replication_group_members rgm ON i.mysql_server_uuid = rgm.MEMBER_ID WHERE BINARY @@hostname = (SELECT BINARY MEMBER_HOST FROM performance_schema.replication_group_members WHERE MEMBER_ROLE = 'PRIMARY')"
   metrics:
     - CLUSTER_NAME:
         usage: "LABEL"
@@ -89,7 +89,7 @@ mysql_performance_schema_group_replication_replication_group_members:
         usage: "GAUGE"
         description: "Role in an interger value"
 mysql_performance_schema_group_replication_replication_router:
-  query: "select host_name as HOST_NAME , 0 as VALUE from mysql_innodb_cluster_metadata.hosts WHERE attributes LIKE '%mysql-router%' AND @@hostname = (SELECT MEMBER_HOST FROM performance_schema.replication_group_members WHERE MEMBER_ROLE = 'PRIMARY');"
+  query: "select host_name as HOST_NAME , 0 as VALUE from mysql_innodb_cluster_metadata.hosts WHERE attributes LIKE '%mysql-router%' AND BINARY @@hostname = (SELECT BINARY MEMBER_HOST FROM performance_schema.replication_group_members WHERE MEMBER_ROLE = 'PRIMARY');"
   metrics:
     - HOST_NAME:
         usage: "LABEL"
