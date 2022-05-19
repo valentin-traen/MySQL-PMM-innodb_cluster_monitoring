@@ -89,11 +89,14 @@ mysql_performance_schema_group_replication_replication_group_members:
         usage: "GAUGE"
         description: "Role in an interger value"
 mysql_performance_schema_group_replication_replication_router:
-  query: "select address as HOST_NAME, 0 as VALUE from mysql_innodb_cluster_metadata.routers;"
+  query: "select address as HOST_NAME,version as VERSION, IF(last_check_in > NOW() - INTERVAL 10 MINUTE,'0','1') as VALUE from mysql_innodb_cluster_metadata.v2_routers WHERE BINARY @@hostname = (select BINARY member_host from performance_schema.replication_group_members where member_role = 'PRIMARY');"
   metrics:
     - HOST_NAME:
         usage: "LABEL"
         description: "Name of the router"
+    - VERSION:
+        usage: "LABEL"
+        description: "Version of the router"
     - VALUE:
         usage: "GAUGE"
-        description: "Fixed value"
+        description: "0 = reachable 1 = unreachable"
